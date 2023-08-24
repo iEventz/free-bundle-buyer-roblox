@@ -5,7 +5,7 @@
 <p align="left">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
 ### Usage
-Update the config.json accordingly 
+Update the json with all your settings
 ```json
 {
     "accounts": {
@@ -22,3 +22,14 @@ Update the config.json accordingly
     }
 }
 ```
+#### accounts
+Add your accounts in here and your alts
+
+#### webhook
+Toggle enabled to false or true depending and add the url
+
+#### bundles
+Toggle enabled or false depending on if you want to buy free bundles (heads coming soon)
+
+### only new
+False to catch up on previous free bundles true to only buy the new ones in the catalog
