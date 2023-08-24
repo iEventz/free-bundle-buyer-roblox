@@ -5,9 +5,20 @@
 <p align="left">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
 ### Usage
-* Replace your account cookies and alts if needed
-* Add your webhook
-* Enable bundles
-* Enable if you only want to buy new items or also items you're missing
-* Run main.py
-  
+Update the config.json accordingly 
+```
+{
+    "accounts": {
+        "main_account": "",
+        "alt_accounts": []
+    },
+    "webhook": {
+        "enabled": true,
+        "url": ""
+    },
+    "misc": {
+        "bundles": true,
+        "only_new": false
+    }
+}
+```
