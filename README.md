@@ -6,7 +6,7 @@
 
 ### Usage
 Update the config.json accordingly 
-``json
+```json
 {
     "accounts": {
         "main_account": "",
