@@ -9,4 +9,5 @@
 * Add your webhook
 * Enable bundles
 * Enable if you only want to buy new items or also items you're missing
+* Run main.py
   
