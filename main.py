@@ -116,6 +116,9 @@ class Snipe:
                         for item in json_response["data"]:
                             if item["id"] not in self.accounts[account]["owned"]:
                                 self.accounts[account]["owned"].append(item["id"])
+                    else:
+                        input("Something went wrong ")
+                        exit()
 
     def fetch_data(self, cursor):
         urls = [
