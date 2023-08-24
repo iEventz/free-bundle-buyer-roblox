@@ -13,7 +13,7 @@ Update the json with all your settings
         "alt_accounts": []
     },
     "webhook": {
-        "enabled": true,
+        "enabled": false,
         "url": ""
     },
     "misc": {
