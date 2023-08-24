@@ -26,7 +26,7 @@ Update the json with all your settings
 Add your accounts in here and your alts
 
 #### webhook
-Notifies you when there has been a successfull purchase
+Notifies you when there has been a successful purchase
 
 #### bundles
 Toggle enabled or false depending on if you want to buy free bundles (heads coming soon)
