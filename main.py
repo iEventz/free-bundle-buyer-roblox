@@ -1,4 +1,5 @@
 # Made by chareou (roblox) lovingsosa (discord)
+# pls dont skid the code isnt even that good
 
 try:
     import os
