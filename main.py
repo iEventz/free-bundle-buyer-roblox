@@ -244,7 +244,10 @@ class Snipe:
                             + f"> Successfully bought (character) {name} on {self.accounts[account]['name']}"
                         )
                         self.accounts[account]["owned"].append(id_)
-                        threading.Thread(target=self.send_webhook,args=(name, self.accounts[account]["name"], id_)).start()
+                        threading.Thread(
+                            target=self.send_webhook,
+                            args=(name, self.accounts[account]["name"], id_),
+                        ).start()
                         break
                     else:
                         break
