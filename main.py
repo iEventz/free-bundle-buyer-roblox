@@ -268,6 +268,8 @@ class Snipe:
                         if "Token Validation Failed" in response.text:
                             print(colorama.Fore.YELLOW + "> Refreshing auth token")
                             self.refresh_cookies()
+                            buy_headers["x-csrf-token"] = self.accounts[account]["auth"]
+                            time.sleep(1)
             except Exception:
                 print(f"{colorama.Fore.RED}> Error in \n {traceback.format_exc()}")
 
