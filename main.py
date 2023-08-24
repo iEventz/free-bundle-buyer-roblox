@@ -88,7 +88,7 @@ class Snipe:
                     {
                         "title": f"{name}",
                         "description": f"Successfully bought {name} on {user}",
-                        "url": f"https://roblox.com/catalog/bundles/{_id}",
+                        "url": f"https://roblox.com/bundles/{_id}",
                         "color": 2829617,
                     }
                 ],
