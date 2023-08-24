@@ -118,7 +118,7 @@ class Snipe:
                                 self.accounts[account]["owned"].append(item["id"])
                     else:
                         input("Something went wrong ")
-                        exit()
+                        exit(0)
 
     def fetch_data(self, cursor):
         urls = [
