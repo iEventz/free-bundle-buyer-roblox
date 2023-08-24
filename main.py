@@ -1,5 +1,4 @@
 # Made by chareou (roblox) lovingsosa (discord)
-# pls dont skid the code isnt even that good
 
 try:
     import os
@@ -135,18 +134,21 @@ class Snipe:
             "https://catalog.roblox.com/v1/search/items?maxPrice=0&sortType=3&limit=120&category=Characters&salesTypeFilter=1",
         ]
 
-        response = self.session.get(
-            f"{random.choice(urls)}&cursor={cursor}"
-            if cursor is not None
-            else random.choice(urls),
-            cookies={
-                ".ROBLOSECURITY": self.accounts.get(
-                    config["accounts"]["main_account"][-4:]
-                )["cookie"]
-            },
-            headers=headers,
-        )
-        return response
+        try:
+            response = self.session.get(
+                f"{random.choice(urls)}&cursor={cursor}"
+                if cursor is not None
+                else random.choice(urls),
+                cookies={
+                    ".ROBLOSECURITY": self.accounts.get(
+                        config["accounts"]["main_account"][-4:]
+                    )["cookie"]
+                },
+                headers=headers,
+            )
+            return response
+        except:
+            return
 
     def get_free_bundles(self):
         current_cursor = ""
