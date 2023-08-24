@@ -2,6 +2,7 @@
 
 <p align="center"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/iEventz/free-bundle-buyer-roblox?color=yellow&style=flat-square"> <img alt="GitHub forks" src="https://img.shields.io/github/forks/iEventz/free-bundle-buyer-roblox?style=flat-square"></p>
 
-Automatically buys new or previously free bundles in the Roblox catalog
+<p align="center">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
+### Information
 too lazy, ill do this tomorrow but its not hard to figure out how to use
