@@ -2,7 +2,7 @@
 
 <h1 align="left">Free Roblox Bundle Buyer</h1>
 
-<p align="left">Automatically buys new or previously free bundles in the Roblox catalog.</p>
+<p align="left">Automatically buys new or previously free bundles in the Roblox catalog</p>
 
 ### Usage
 Update the json with all your settings
