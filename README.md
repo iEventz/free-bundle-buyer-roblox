@@ -5,5 +5,8 @@
 <p align="left">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
 ### Usage
-* Fill out config.json with all the usefull information
+* Replace your account cookies and alts if needed
+* Add your webhook
+* Enable bundles
+* Enable if you only want to buy new items or also items you're missing
   
