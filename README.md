@@ -26,10 +26,10 @@ Update the json with all your settings
 Add your accounts in here and your alts
 
 #### webhook
-Toggle enabled to false or true depending and add the url
+Notifies you when there has been a successfull purchase
 
 #### bundles
 Toggle enabled or false depending on if you want to buy free bundles (heads coming soon)
 
-### only new
+#### only new
 False to catch up on previous free bundles true to only buy the new ones in the catalog
