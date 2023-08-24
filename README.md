@@ -4,6 +4,4 @@
 
 <p align="center">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
-
-## Licsensed under an Open Source initivate MT
-[Open Source Initiative MIT License](https://opensource.org/license/mit/)
+too lazy, ill do this tomorrow but its not hard to figure out how to use
