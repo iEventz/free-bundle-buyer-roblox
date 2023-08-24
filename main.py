@@ -263,11 +263,11 @@ class Snipe:
                             colorama.Fore.YELLOW
                             + f"> Waiting a minute to buy {name} on {self.accounts[account]['name']}"
                         )
+                        time.sleep(60)
                     else:
                         if "Token Validation Failed" in response.text:
                             print(colorama.Fore.YELLOW + "> Refreshing auth token")
                             self.refresh_cookies()
-                time.sleep(60)
             except Exception:
                 print(f"{colorama.Fore.RED}> Error in \n {traceback.format_exc()}")
 
