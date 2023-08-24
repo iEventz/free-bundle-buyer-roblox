@@ -37,4 +37,4 @@ False to catch up on previous free bundles true to only buy the new ones in the 
 ### Support
 If you need help setting up this program message me on discord: lovingsosa
 
-btw if its slow its because roblox only allows 2 buy requests per minute
+😂 btw if its slow its because roblox only allows 2 buy requests per minute
