@@ -1,6 +1,8 @@
-# free-bundle-buyer-roblox
+# Free Bundle Buyer
 
-easy to set up if your not an idiot
+<p align="center"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/iEventz/free-bundle-buyer-roblox?color=yellow&style=flat-square"> <img alt="GitHub forks" src="https://img.shields.io/github/stars/iEventz/free-bundle-buyer-roblox?style=flat-square"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/Norikiru/bloxflip-rain?style=flat-square"></p>
 
-i was gonna make it so u can get all the free ugc items automatically but i dont have a vps server or proxies (only the ones in the free.json will be bought)
+Automatically buys new or previous free bundles in the roblox catalog.
 
+
+```hi```
