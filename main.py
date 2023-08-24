@@ -1,4 +1,4 @@
-#Made by chareou (roblox) lovingsosa (discord)
+# Made by chareou (roblox) lovingsosa (discord)
 
 try:
     import os
@@ -56,6 +56,9 @@ class Snipe:
 
         print(colorama.Fore.GREEN + "Successfully started")
 
+        if config["webhook"]["enabled"]:
+            self.webhook_url = config["webhook"]["url"]
+
         if config["misc"]["bundles"]:
             threading.Thread(target=self.get_free_bundles).start()
 
@@ -76,6 +79,25 @@ class Snipe:
             except Exception:
                 input(f"> Invalid cookie ending in {cookie} ")
                 exit(0)
+
+    def send_webhook(self, name, user, _id):
+        if config["webhook"]["enabled"]:
+            data = {
+                "content": None,
+                "embeds": [
+                    {
+                        "title": f"{name}",
+                        "description": f"Successfully bought {name} on {user}",
+                        "url": f"https://roblox.com/catalog/bundles/{_id}",
+                        "color": 2829617,
+                    }
+                ],
+                "attachments": [],
+            }
+            try:
+                self.session.post(self.webhook_url, json=data)
+            except Exception:
+                pass
 
     def get_owned_bundles(self):
         for account in self.accounts:
@@ -189,7 +211,7 @@ class Snipe:
             self.ready = True
             time.sleep(240)
 
-    def buy(self, productid, sellerid, account, id, name):
+    def buy(self, productid, sellerid, account, id_, name):
         payload = {
             "expectedCurrency": 1,
             "expectedPrice": 0,
@@ -214,14 +236,15 @@ class Snipe:
                             + f"> Something went wrong: {response.json()['errorMsg']}"
                         )
                         if response.json()["errorMsg"] == "You already own this item.":
-                            self.accounts[account]["owned"].append(id)
+                            self.accounts[account]["owned"].append(id_)
                             break
                     elif status == 690:
                         print(
                             colorama.Fore.GREEN
                             + f"> Successfully bought (character) {name} on {self.accounts[account]['name']}"
                         )
-                        self.accounts[account]["owned"].append(id)
+                        self.accounts[account]["owned"].append(id_)
+                        threading.Thread(target=self.send_webhook,args=(name, self.accounts[account]["name"], id_)).start()
                         break
                     else:
                         break
