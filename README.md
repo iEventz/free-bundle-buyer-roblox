@@ -33,3 +33,8 @@ Toggle enabled or false depending on if you want to buy free bundles (heads comi
 
 #### only new
 False to catch up on previous free bundles true to only buy the new ones in the catalog
+
+### Support
+If you need help setting up this program message me on discord: lovingsosa
+
+btw if its slow its because roblox only allows 2 buy requests per minute
