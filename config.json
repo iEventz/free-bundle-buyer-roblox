@@ -1,0 +1,14 @@
+{
+    "accounts": {
+        "main_account": "",
+        "alt_accounts": []
+    },
+    "webhook": {
+        "enabled": true,
+        "url": ""
+    },
+    "misc": {
+        "bundles": true,
+        "only_new": false
+    }
+}
