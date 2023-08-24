@@ -5,4 +5,4 @@
 <p align="center">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
 ### Information
-too lazy, ill do this tomorrow but its not hard to figure out how to use
+too lazy, ill do this tomorrow but its not hard to figure out how to use and dont complain about how slow it is roblox ratelimits buy requests to 2 per minute
