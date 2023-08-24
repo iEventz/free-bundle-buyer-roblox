@@ -5,5 +5,5 @@
 <p align="center">Automatically buys new or previously free bundles in the Roblox catalog.</p>
 
 
-
+# Licsensed under an Open Source initivate MT
 [Open Source Initiative MIT License](https://opensource.org/license/mit/)
