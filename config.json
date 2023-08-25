@@ -1,5 +1,5 @@
 {
-    "accounts": {
+    "accounts":  {
         "main_account": "",
         "alt_accounts": []
     },
@@ -9,6 +9,7 @@
     },
     "misc": {
         "bundles": true,
+        "heads": true,
         "only_new": false
     }
 }
