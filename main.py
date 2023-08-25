@@ -13,7 +13,7 @@ try:
 except ImportError:
     os.system("pip install requests colorama")
 
-headers = {
+HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
     "Accept-Encoding": "gzip",
     "Content-Type": "application/json; charset=utf-8",
@@ -23,9 +23,8 @@ init(autoreset=True)
 
 config = json.load(open("config.json", "r"))
 
-
 class Snipe:
-    VERSION = "1.0.0"
+    VERSION = "2.0.0"
 
     def __init__(self) -> None:
         self.session = requests.Session()
@@ -37,19 +36,22 @@ class Snipe:
                 "id": 0,
                 "cookie": config["accounts"]["main_account"],
                 "auth": None,
-                "owned": [],
+                "owned_bundles": [],
+                "owned_heads": [],
             }
         }
 
         for cookie in config["accounts"]["alt_accounts"]:
             if cookie:
                 self.accounts[cookie[-4:]] = {
-                    "cookie": cookie,
-                    "auth": None,
                     "name": None,
                     "id": 0,
-                    "owned": [],
+                    "cookie": cookie,
+                    "auth": None,
+                    "owned_bundles": [],
+                    "owned_heads": [],
                 }
+
         self.verify_cookies()
         threading.Thread(target=self.auto_updater).start()
         threading.Thread(target=self.version_updater).start()
@@ -64,6 +66,9 @@ class Snipe:
 
         if config["misc"]["bundles"]:
             threading.Thread(target=self.get_free_bundles).start()
+
+        if config["misc"]["heads"]:
+            threading.Thread(target=self.get_free_heads).start()
 
     def version_updater(self):
         response = self.session.get("https://pastebin.com/raw/nALVgjcz")
@@ -86,13 +91,65 @@ class Snipe:
                     self.accounts[cookie]["id"] = json_response.get("UserId")
                     self.accounts[cookie]["name"] = json_response.get("Name")
                 else:
-                    raise Exception
+                    input(f"Suspected ratelimit try again later ")
+                    exit(0)
 
             except Exception:
                 input(f"> Invalid cookie ending in {cookie} ")
                 exit(0)
 
-    def send_webhook(self, name, user, _id):
+    def get_owned(self):
+        if config["misc"]["bundles"]:
+            for account in self.accounts:
+                with requests.Session() as session:
+                    cursor = ""
+                    while cursor is not None:
+                        response = session.get(
+                            f'https://catalog.roblox.com/v1/users/{self.accounts[account]["id"]}/bundles/1?limit=100&nextPageCursor=&sortOrder=Desc&cursor={cursor}',
+                            headers={
+                                "Cookie": f'.ROBLOSECURITY={self.accounts[account]["cookie"]}'
+                            },
+                        )
+                        if response.status_code == 200:
+                            json_response = response.json()
+                            cursor = json_response["nextPageCursor"]
+                            for item in json_response["data"]:
+                                if (
+                                    item["id"]
+                                    not in self.accounts[account]["owned_bundles"]
+                                ):
+                                    self.accounts[account]["owned_bundles"].append(
+                                        item["id"]
+                                    )
+                        else:
+                            time.sleep(2)
+
+        if config["misc"]["heads"]:
+            for account in self.accounts:
+                with requests.Session() as session:
+                    cursor = ""
+                    while cursor is not None:
+                        response = session.get(
+                            f'https://catalog.roblox.com/v1/users/{self.accounts[account]["id"]}/bundles/4?limit=100&nextPageCursor=&sortOrder=Desc&cursor={cursor}',
+                            headers={
+                                "Cookie": f'.ROBLOSECURITY={self.accounts[account]["cookie"]}'
+                            },
+                        )
+                        if response.status_code == 200:
+                            json_response = response.json()
+                            cursor = json_response["nextPageCursor"]
+                            for item in json_response["data"]:
+                                if (
+                                    item["id"]
+                                    not in self.accounts[account]["owned_heads"]
+                                ):
+                                    self.accounts[account]["owned_heads"].append(
+                                        item["id"]
+                                    )
+                        else:
+                            time.sleep(2)
+    
+    def send_webhook(self, name, user, bundle_id):
         if config["webhook"]["enabled"]:
             data = {
                 "content": None,
@@ -100,90 +157,84 @@ class Snipe:
                     {
                         "title": f"{name}",
                         "description": f"Successfully bought {name} on {user}",
-                        "url": f"https://roblox.com/bundles/{_id}",
+                        "url": f"https://roblox.com/bundles/{bundle_id}",
                         "color": 2829617,
+                        "thumbnail": {"url": None},
                     }
                 ],
-                "attachments": [],
             }
             try:
+                thumbnail = self.session.get(
+                    f"https://thumbnails.roblox.com/v1/bundles/thumbnails?bundleIds={bundle_id}&size=150x150&format=Png&isCircular=false"
+                )
+                if thumbnail.status_code == 200:
+                    thumbnail = thumbnail.json()["data"][0]["imageUrl"]
+                else:
+                    thumbnail = None
+
+                data["embeds"][0]["thumbnail"]["url"] = thumbnail
                 self.session.post(self.webhook_url, json=data)
             except Exception:
                 pass
 
-    def get_owned_bundles(self):
-        for account in self.accounts:
-            with requests.Session() as session:
-                cursor = ""
-                while cursor is not None:
-                    response = session.get(
-                        f'https://catalog.roblox.com/v1/users/{self.accounts[account]["id"]}/bundles/1?limit=100&nextPageCursor=&sortOrder=Desc&cursor={cursor}',
-                        headers={
-                            "Cookie": f'.ROBLOSECURITY={self.accounts[account]["cookie"]}'
-                        },
-                    )
-                    if response.status_code == 200:
-                        json_response = response.json()
-                        cursor = json_response["nextPageCursor"]
-                        for item in json_response["data"]:
-                            if item["id"] not in self.accounts[account]["owned"]:
-                                self.accounts[account]["owned"].append(item["id"])
-                    else:
-                        input("Something went wrong ")
-                        exit(0)
-
-    def fetch_data(self, cursor):
-        urls = [
-            "https://catalog.roblox.com/v1/search/items?limit=120&category=Characters&sortType=3&maxPrice=0&salesTypeFilter=1",
-            "https://catalog.roblox.com/v1/search/items?sortType=3&limit=120&maxPrice=0&category=Characters&salesTypeFilter=1",
-            "https://catalog.roblox.com/v1/search/items?salesTypeFilter=1&maxPrice=0&limit=120&category=Characters&sortType=3",
-            "https://catalog.roblox.com/v1/search/items?limit=120&sortType=3&category=Characters&salesTypeFilter=1&maxPrice=0",
-            "https://catalog.roblox.com/v1/search/items?salesTypeFilter=1&category=Characters&limit=120&maxPrice=0&sortType=3",
-            "https://catalog.roblox.com/v1/search/items?maxPrice=0&limit=120&salesTypeFilter=1&category=Characters&sortType=3",
-            "https://catalog.roblox.com/v1/search/items?category=Characters&limit=120&sortType=3&maxPrice=0&salesTypeFilter=1",
-            "https://catalog.roblox.com/v1/search/items?salesTypeFilter=1&maxPrice=0&limit=120&sortType=3&category=Characters",
-            "https://catalog.roblox.com/v1/search/items?salesTypeFilter=1&sortType=3&limit=120&category=Characters&maxPrice=0",
-            "https://catalog.roblox.com/v1/search/items?maxPrice=0&sortType=3&limit=120&category=Characters&salesTypeFilter=1",
-        ]
-
+    def fetch_bundle_data(self, cursor):
+        url = "https://catalog.roblox.com/v1/search/items?limit=120&category=Characters&sortType=3&maxPrice=0&salesTypeFilter=1"
         try:
             response = self.session.get(
-                f"{random.choice(urls)}&cursor={cursor}"
-                if cursor is not None
-                else random.choice(urls),
+                f"{url}&cursor={cursor}" if cursor is not None else url,
                 cookies={
                     ".ROBLOSECURITY": self.accounts.get(
                         config["accounts"]["main_account"][-4:]
                     )["cookie"]
                 },
-                headers=headers,
+                headers=HEADERS,
             )
             return response
         except:
             return
-
+    
+    def fetch_head_data(self, cursor):
+        url = "https://catalog.roblox.com/v2/search/items/details?sortType=3&category=BodyParts&limit=120&maxPrice=0&salesTypeFilter=1"
+        try:
+            response = self.session.get(
+                f"{url}&cursor={cursor}" if cursor is not None else url,
+                cookies={
+                    ".ROBLOSECURITY": self.accounts.get(
+                        config["accounts"]["main_account"][-4:]
+                    )["cookie"]
+                },
+                headers=HEADERS,
+            )
+            return response
+        except:
+            return
+        
     def get_free_bundles(self):
         current_cursor = ""
 
         if self.only_new == True:
             while current_cursor is not None:
-                response = self.fetch_data(current_cursor)
+                response = self.fetch_bundle_data(current_cursor)
                 if response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
                     for item in json_response["data"]:
                         for account in self.accounts:
-                            self.accounts[account]["owned"].append(item["id"])
+                            self.accounts[account]["owned_bundles"].append(item["id"])
+                time.sleep(0.5)
 
         while True:
             try:
-                response = self.fetch_data(current_cursor)
+                response = self.fetch_bundle_data(current_cursor)
                 if response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
                     for item in json_response["data"]:
                         for account in self.accounts:
-                            if item["id"] not in self.accounts[account]["owned"]:
+                            if (
+                                item["id"]
+                                not in self.accounts[account]["owned_bundles"]
+                            ):
                                 extra_info = self.session.get(
                                     f'https://catalog.roblox.com/v1/bundles/{item["id"]}/details',
                                     cookies={
@@ -200,8 +251,64 @@ class Snipe:
                                         account,
                                         extra_json["id"],
                                         extra_json["name"],
+                                        "bundle",
                                     )
-                                    time.sleep(1)
+                                    time.sleep(0.5)
+                time.sleep(2)
+            except Exception as error:
+                print(f"{colorama.Fore.RED}Error in \n {traceback.format_exc()}")
+    
+    def get_free_heads(self):
+        current_cursor = ""
+
+        if self.only_new == True:
+            while current_cursor is not None:
+                response = self.fetch_head_data(current_cursor)
+                if response.status_code == 200:
+                    json_response = response.json()
+                    current_cursor = json_response["nextPageCursor"]
+                    for item in json_response["data"]:
+                        for account in self.accounts:
+                            if (
+                                item["id"] not in self.accounts[account]["owned_heads"]
+                                and item.get("itemType") == "Bundle"
+                                and item.get("bundleType") == 4
+                            ):
+                                self.accounts[account]["owned_heads"].append(item["id"])
+                time.sleep(0.5)
+
+        while True:
+            try:
+                response = self.fetch_head_data(current_cursor)
+                if response.status_code == 200:
+                    json_response = response.json()
+                    current_cursor = json_response["nextPageCursor"]
+                    for item in json_response["data"]:
+                        for account in self.accounts:
+                            if (
+                                item["id"] not in self.accounts[account]["owned_heads"]
+                                and item.get("itemType") == "Bundle"
+                                and item.get("bundleType") == 4
+                            ):
+                                extra_info = self.session.get(
+                                    f'https://catalog.roblox.com/v1/bundles/{item["id"]}/details',
+                                    cookies={
+                                        ".ROBLOSECURITY": config["accounts"][
+                                            "main_account"
+                                        ][-4:]
+                                    },
+                                )
+                                if extra_info.status_code == 200:
+                                    extra_json = extra_info.json()
+                                    self.buy(
+                                        extra_json["product"]["id"],
+                                        extra_json["creator"]["id"],
+                                        account,
+                                        extra_json["id"],
+                                        extra_json["name"],
+                                        "head",
+                                    )
+                                    time.sleep(0.5)
                 time.sleep(2)
             except Exception as error:
                 print(f"{colorama.Fore.RED}Error in \n {traceback.format_exc()}")
@@ -223,20 +330,20 @@ class Snipe:
                 exit(0)
 
     def auto_updater(self):
-        self.get_owned_bundles()
+        self.get_owned()
         while True:
             self.refresh_cookies()
             self.ready = True
             time.sleep(240)
 
-    def buy(self, productid, sellerid, account, id_, name):
+    def buy(self, productid, sellerid, account, id_, name, type_):
         payload = {
             "expectedCurrency": 1,
             "expectedPrice": 0,
             "expectedSellerId": sellerid,
         }
 
-        buy_headers = headers.copy()
+        buy_headers = HEADERS.copy()
         buy_headers["x-csrf-token"] = self.accounts[account]["auth"]
         while True:
             try:
@@ -254,17 +361,27 @@ class Snipe:
                             + f"> Something went wrong: {response.json()['errorMsg']}"
                         )
                         if response.json()["errorMsg"] == "You already own this item.":
-                            self.accounts[account]["owned"].append(id_)
+                            if type_ == "bundle":
+                                self.accounts[account]["owned_bundles"].append(id_)
+                            else:
+                                self.accounts[account]["owned_heads"].append(id_)
                             break
                     elif status == 690:
                         print(
                             colorama.Fore.GREEN
-                            + f"> Successfully bought (character) {name} on {self.accounts[account]['name']}"
+                            + f"> Successfully bought ({type_}) {name} on {self.accounts[account]['name']}"
                         )
-                        self.accounts[account]["owned"].append(id_)
+                        if type_ == "bundle":
+                            self.accounts[account]["owned_bundles"].append(id_)
+                        else:
+                            self.accounts[account]["owned_heads"].append(id_)
                         threading.Thread(
                             target=self.send_webhook,
-                            args=(name, self.accounts[account]["name"], id_),
+                            args=(
+                                name,
+                                self.accounts[account]["name"],
+                                id_,
+                            ),
                         ).start()
                         break
                     else:
