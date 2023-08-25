@@ -81,21 +81,17 @@ class Snipe:
 
     def verify_cookies(self):
         for cookie, details in self.accounts.items():
-            try:
-                response = self.session.get(
-                    "https://www.roblox.com/my/settings/json",
-                    headers={"Cookie": f'.ROBLOSECURITY={details["cookie"]}'},
-                )
-                if response.status_code == 200:
-                    json_response = response.json()
-                    self.accounts[cookie]["id"] = json_response.get("UserId")
-                    self.accounts[cookie]["name"] = json_response.get("Name")
-                else:
-                    input(f"Suspected ratelimit try again later ")
-                    exit(0)
-
-            except Exception:
-                input(f"> Invalid cookie ending in {cookie} ")
+            response = self.session.get(
+                "https://users.roblox.com/v1/users/authenticated",
+                headers={"Cookie": f'.ROBLOSECURITY={details["cookie"]}'},
+            )
+            if response.status_code == 200:
+                json_response = response.json()
+                self.accounts[cookie]["id"] = json_response.get("id")
+                self.accounts[cookie]["name"] = json_response.get("name")
+            else:
+                print(colorama.Fore.RED + f"Invalid cookie or ratelimit try again in a minute {response.text}")
+                input()
                 exit(0)
 
     def get_owned(self):
