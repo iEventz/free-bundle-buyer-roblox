@@ -322,7 +322,7 @@ class Snipe:
                     raise Exception
 
             except Exception:
-                input(f"> Invalid cookie ending in {cookie}")
+                input(f"> 2 Invalid cookie ending in {cookie}")
                 exit(0)
 
     def auto_updater(self):
