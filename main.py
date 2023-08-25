@@ -25,6 +25,8 @@ config = json.load(open("config.json", "r"))
 
 
 class Snipe:
+    VERSION = "1.0.0"
+
     def __init__(self) -> None:
         self.session = requests.Session()
         self.ready = False
@@ -50,6 +52,7 @@ class Snipe:
                 }
         self.verify_cookies()
         threading.Thread(target=self.auto_updater).start()
+        threading.Thread(target=self.updater).start()
 
         while not self.ready:
             time.sleep(1)
@@ -61,6 +64,15 @@ class Snipe:
 
         if config["misc"]["bundles"]:
             threading.Thread(target=self.get_free_bundles).start()
+
+    def updater(self):
+        response = self.session.get("https://pastebin.com/raw/nALVgjcz")
+        if response.status_code == 200:
+            if self.VERSION != response.text:
+                print(
+                    colorama.Fore.YELLOW
+                    + "A new version available update at: https://github.com/iEventz/free-bundle-buyer-roblox"
+                )
 
     def verify_cookies(self):
         for cookie, details in self.accounts.items():
