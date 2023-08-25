@@ -23,8 +23,9 @@ init(autoreset=True)
 
 config = json.load(open("config.json", "r"))
 
+
 class Snipe:
-    VERSION = "2.0.0"
+    VERSION = "2.0.1"
 
     def __init__(self) -> None:
         self.session = requests.Session()
@@ -90,7 +91,10 @@ class Snipe:
                 self.accounts[cookie]["id"] = json_response.get("id")
                 self.accounts[cookie]["name"] = json_response.get("name")
             else:
-                print(colorama.Fore.RED + f"Invalid cookie or ratelimit try again in a minute {response.text}")
+                print(
+                    colorama.Fore.RED
+                    + f"Invalid cookie or ratelimit try again in a minute {response.text}"
+                )
                 input()
                 exit(0)
 
@@ -144,7 +148,7 @@ class Snipe:
                                     )
                         else:
                             time.sleep(2)
-    
+
     def send_webhook(self, name, user, bundle_id):
         if config["webhook"]["enabled"]:
             data = {
@@ -156,6 +160,9 @@ class Snipe:
                         "url": f"https://roblox.com/bundles/{bundle_id}",
                         "color": 2829617,
                         "thumbnail": {"url": None},
+                        "footer": {
+                            "text": "made by lovingsosa"
+                        },  # pls dont remove i need my 2 seconds of fame
                     }
                 ],
             }
@@ -188,7 +195,7 @@ class Snipe:
             return response
         except:
             return
-    
+
     def fetch_head_data(self, cursor):
         url = "https://catalog.roblox.com/v2/search/items/details?sortType=3&category=BodyParts&limit=120&maxPrice=0&salesTypeFilter=1"
         try:
@@ -204,7 +211,7 @@ class Snipe:
             return response
         except:
             return
-        
+
     def get_free_bundles(self):
         current_cursor = ""
 
@@ -253,7 +260,7 @@ class Snipe:
                 time.sleep(2)
             except Exception as error:
                 print(f"{colorama.Fore.RED}Error in \n {traceback.format_exc()}")
-    
+
     def get_free_heads(self):
         current_cursor = ""
 
@@ -357,6 +364,12 @@ class Snipe:
                             + f"> Something went wrong: {response.json()['errorMsg']}"
                         )
                         if response.json()["errorMsg"] == "You already own this item.":
+                            if type_ == "bundle":
+                                self.accounts[account]["owned_bundles"].append(id_)
+                            else:
+                                self.accounts[account]["owned_heads"].append(id_)
+                            break
+                        elif response.json()["errorMsg"] == " This item has changed price. Please try again.":
                             if type_ == "bundle":
                                 self.accounts[account]["owned_bundles"].append(id_)
                             else:
