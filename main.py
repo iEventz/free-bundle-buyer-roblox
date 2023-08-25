@@ -52,7 +52,7 @@ class Snipe:
                 }
         self.verify_cookies()
         threading.Thread(target=self.auto_updater).start()
-        threading.Thread(target=self.updater).start()
+        threading.Thread(target=self.version_updater).start()
 
         while not self.ready:
             time.sleep(1)
@@ -65,7 +65,7 @@ class Snipe:
         if config["misc"]["bundles"]:
             threading.Thread(target=self.get_free_bundles).start()
 
-    def updater(self):
+    def version_updater(self):
         response = self.session.get("https://pastebin.com/raw/nALVgjcz")
         if response.status_code == 200:
             if self.VERSION != response.text:
