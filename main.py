@@ -369,7 +369,7 @@ class Snipe:
                             else:
                                 self.accounts[account]["owned_heads"].append(id_)
                             break
-                        elif response.json()["errorMsg"] == " This item has changed price. Please try again.":
+                        elif response.json()["errorMsg"] == "This item has changed price. Please try again.":
                             if type_ == "bundle":
                                 self.accounts[account]["owned_bundles"].append(id_)
                             else:
