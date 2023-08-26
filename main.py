@@ -229,7 +229,7 @@ class Snipe:
         while True:
             try:
                 response = self.fetch_bundle_data(current_cursor)
-                if response.status_code == 200:
+                if response is not None and response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
                     for item in json_response["data"]:
@@ -283,7 +283,7 @@ class Snipe:
         while True:
             try:
                 response = self.fetch_head_data(current_cursor)
-                if response.status_code == 200:
+                if response is not None and response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
                     for item in json_response["data"]:
