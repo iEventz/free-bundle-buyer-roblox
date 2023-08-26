@@ -25,7 +25,7 @@ config = json.load(open("config.json", "r"))
 
 
 class Snipe:
-    VERSION = "2.0.1"
+    VERSION = "2.0.2"
 
     def __init__(self) -> None:
         self.session = requests.Session()
@@ -180,24 +180,7 @@ class Snipe:
             except Exception:
                 pass
 
-    def fetch_bundle_data(self, cursor):
-        url = "https://catalog.roblox.com/v1/search/items?limit=120&category=Characters&sortType=3&maxPrice=0&salesTypeFilter=1"
-        try:
-            response = self.session.get(
-                f"{url}&cursor={cursor}" if cursor is not None else url,
-                cookies={
-                    ".ROBLOSECURITY": self.accounts.get(
-                        config["accounts"]["main_account"][-4:]
-                    )["cookie"]
-                },
-                headers=HEADERS,
-            )
-            return response
-        except:
-            return
-
-    def fetch_head_data(self, cursor):
-        url = "https://catalog.roblox.com/v2/search/items/details?sortType=3&category=BodyParts&limit=120&maxPrice=0&salesTypeFilter=1"
+    def fetch_data(self, cursor, url):
         try:
             response = self.session.get(
                 f"{url}&cursor={cursor}" if cursor is not None else url,
@@ -217,7 +200,7 @@ class Snipe:
 
         if self.only_new == True:
             while current_cursor is not None:
-                response = self.fetch_bundle_data(current_cursor)
+                response = self.fetch_data(current_cursor, 'https://catalog.roblox.com/v1/search/items?limit=120&category=Characters&sortType=3&maxPrice=0&salesTypeFilter=1')
                 if response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
@@ -228,7 +211,7 @@ class Snipe:
 
         while True:
             try:
-                response = self.fetch_bundle_data(current_cursor)
+                response = self.fetch_data(current_cursor, 'https://catalog.roblox.com/v1/search/items?limit=120&category=Characters&sortType=3&maxPrice=0&salesTypeFilter=1')
                 if response is not None and response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
@@ -266,7 +249,7 @@ class Snipe:
 
         if self.only_new == True:
             while current_cursor is not None:
-                response = self.fetch_head_data(current_cursor)
+                response = self.fetch_data(current_cursor, 'https://catalog.roblox.com/v2/search/items/details?sortType=3&category=BodyParts&limit=120&maxPrice=0&salesTypeFilter=1')
                 if response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
@@ -282,7 +265,7 @@ class Snipe:
 
         while True:
             try:
-                response = self.fetch_head_data(current_cursor)
+                response = self.fetch_data(current_cursor, 'https://catalog.roblox.com/v2/search/items/details?sortType=3&category=BodyParts&limit=120&maxPrice=0&salesTypeFilter=1')
                 if response is not None and response.status_code == 200:
                     json_response = response.json()
                     current_cursor = json_response["nextPageCursor"]
