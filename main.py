@@ -378,19 +378,19 @@ class Snipe:
                         break
                     else:
                         break
-                elif response.status_code == 403:
+                elif response.status_code == 429:
                     if "Too many requests" in response.text:
                         print(
                             colorama.Fore.YELLOW
                             + f"> Waiting a minute to buy {name} on {self.accounts[account]['name']}"
                         )
                         time.sleep(60)
-                    else:
-                        if "Token Validation Failed" in response.text:
-                            print(colorama.Fore.YELLOW + "> Refreshing auth token")
-                            self.refresh_cookies()
-                            buy_headers["x-csrf-token"] = self.accounts[account]["auth"]
-                            time.sleep(1)
+                elif response.status_code == 403:
+                    if "Token Validation Failed" in response.text:
+                        print(colorama.Fore.YELLOW + "> Refreshing auth token")
+                        self.refresh_cookies()
+                        buy_headers["x-csrf-token"] = self.accounts[account]["auth"]
+                        time.sleep(1)
             except Exception:
                 print(f"{colorama.Fore.RED}> Error in \n {traceback.format_exc()}")
 
