@@ -25,7 +25,7 @@ config = json.load(open("config.json", "r"))
 
 
 class Snipe:
-    VERSION = "2.0.2"
+    VERSION = "2.0.3"
 
     def __init__(self) -> None:
         self.session = requests.Session()
