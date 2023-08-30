@@ -4,7 +4,7 @@
 
 <p align="left">Automatically buys new or previously free bundles and heads in the Roblox catalog</p>
 
-### JOIN THE DISCORD FOR HELP! https://discord.gg/DX8xvHBSW6
+### JOIN THE DISCORD! https://discord.gg/DX8xvHBSW6
 
 ### Usage
 Update the json with all your settings
