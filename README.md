@@ -32,7 +32,10 @@ Add your accounts in here and your alts
 Notifies you when there has been a successful purchase
 
 #### bundles
-Toggle enabled or false depending on if you want to buy free bundles (heads coming soon)
+Toggle enabled or false depending on if you want to buy free bundles
+
+#### heads
+Toggle enabled or false depending on if you want to buy free heads
 
 #### only new
 False to catch up on previous free bundles true to only buy the new ones in the catalog
